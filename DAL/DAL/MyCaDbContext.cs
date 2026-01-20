@@ -35,8 +35,7 @@ public partial class MyCaDbContext : DbContext
     public virtual DbSet<TFaq> TFaqs { get; set; }
 
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseSqlServer(_configuration.GetConnectionString("MyCA"));
+  
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
