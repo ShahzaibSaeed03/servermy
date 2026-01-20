@@ -10,6 +10,10 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
+/* ===================== PORT (MANDATORY) ===================== */
+builder.WebHost.UseUrls("http://0.0.0.0:8080");
+
+/* ===================== SERVICES ===================== */
 builder.Services.AddTransient<IUserBL, UserBL>();
 builder.Services.AddTransient<IUserDAL, UserDAL>();
 
@@ -17,17 +21,16 @@ builder.Services.AddTransient<IFaqBL, FaqBL>();
 builder.Services.AddTransient<IFaqDAL, FaqDAL>();
 
 builder.Services.AddTransient<IContactBL, ContactBL>();
-
 builder.Services.AddScoped<IJwtTokenBL, JwtTokenBL>();
 
-builder.Services.AddDbContext<MyCaDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("MyCA")));
+/* ===================== DATABASE (PostgreSQL) ===================== */
+var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
 
+builder.Services.AddDbContext<MyCaDbContext>(options =>
+    options.UseNpgsql(databaseUrl));
 
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-})
+/* ===================== AUTH ===================== */
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 .AddJwtBearer(options =>
 {
     options.TokenValidationParameters = new TokenValidationParameters
@@ -35,41 +38,36 @@ builder.Services.AddAuthentication(options =>
         ValidateIssuer = false,
         ValidateAudience = false,
         ValidateIssuerSigningKey = true,
-
-        ValidIssuer = builder.Configuration["JwtSettings:Issuer"],
-        ValidAudience = builder.Configuration["JwtSettings:Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:Key"]))
+        IssuerSigningKey = new SymmetricSecurityKey(
+            Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("JWT_KEY")!)
+        )
     };
 });
+
+/* ===================== CORS ===================== */
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAngular",
-        policy =>
-        {
-            policy.AllowAnyOrigin()
-
-            .AllowAnyHeader()
-            .AllowAnyMethod()
-            .WithExposedHeaders("Authorization");
-            //.AllowCredentials();
-        });
+    options.AddPolicy("AllowAngular", policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .WithExposedHeaders("Authorization");
+    });
 });
 
+/* ===================== SWAGGER ===================== */
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
-
-    // ➤ הוספת אפשרות להזדהות באמצעות JWT
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Name = "Authorization",
         Type = SecuritySchemeType.Http,
         Scheme = "Bearer",
         BearerFormat = "JWT",
-        In = ParameterLocation.Header,
-        Description = "יש להזין את ה-Token בפורמט הבא: Bearer YOUR_TOKEN_HERE"
+        In = ParameterLocation.Header
     });
-
     c.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
@@ -88,28 +86,20 @@ builder.Services.AddSwaggerGen(c =>
 
 builder.Services.AddControllers().AddNewtonsoftJson();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"];
+StripeConfiguration.ApiKey = Environment.GetEnvironmentVariable("STRIPE_SECRET");
 
+/* ===================== APP ===================== */
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseAuthentication();
-
 app.UseAuthorization();
 
-app.UseHttpsRedirection();
-
 app.UseStaticFiles();
-
 app.UseCors("AllowAngular");
 
 app.MapControllers();
