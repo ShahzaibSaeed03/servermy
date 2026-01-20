@@ -36,7 +36,7 @@ namespace BL
             return user.Id;
         }
 
-        public async Task<TUser> GetUserById(int userId)
+        public async Task<TUser?> GetUserById(int userId)
         {
             return await _userDAL.GetUserById(userId);
         }
@@ -52,7 +52,7 @@ namespace BL
             return new ClientUserWithToken(clientUser, token);
         }
 
-        public async Task<TUser> AddTokens(int userId, int number)
+        public async Task<TUser?> AddTokens(int userId, int number)
         {//add mapping
             return await _userDAL.AddTokens(userId, number);
         }

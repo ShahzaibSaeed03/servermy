@@ -19,10 +19,10 @@ namespace DTO
         public string LastName { get; set; } = null!;
 
         [Required]
-        public string Address1 { get; set; }
+        public string Address1 { get; set; } = null!;
         public string? Address2 { get; set; }
-        public string ZipCode { get; set; }
-        public string City { get; set; }
+        public string ZipCode { get; set; } = null!;
+        public string City { get; set; } = null!;
         public string? stateRegion { get; set; }
         public int IdCountry { get; set; }
         public string? PhoneNumber { get; set; }
@@ -54,10 +54,10 @@ namespace DTO
         public string? CompanyOfficialId { get; set; } = null!;
 
         [Required]
-        public string BillingAddress1 { get; set; }
+        public string BillingAddress1 { get; set; } = null!;
         public string? BillingAddress2 { get; set; }
-        public string BillingZipCode { get; set; }
-        public string BillingCity { get; set; }
+        public string BillingZipCode { get; set; } = null!;
+        public string BillingCity { get; set; } = null!;
         public string? BillingstateRegion { get; set; }
         public int IdBillingCountry { get; set; }
         public string? BillingPhoneNumber { get; set; }

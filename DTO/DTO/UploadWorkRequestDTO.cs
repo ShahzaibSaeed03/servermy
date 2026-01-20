@@ -8,8 +8,8 @@ namespace DTO
 {
     public class UploadWorkRequestDTO
     {
-        public string Title {  get; set; }
-        public string OwnerName { get; set; }
-        public string AdditionalOwner { get; set; }
+        public string Title {  get; set; } = null!;
+        public string OwnerName { get; set; } = null!;
+        public string AdditionalOwner { get; set; } = null!;
     }
 }

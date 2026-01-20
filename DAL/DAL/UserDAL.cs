@@ -24,17 +24,17 @@ namespace DAL
             return user;
         }
 
-        public async Task<TUser> GetUserById(int userId)
+        public async Task<TUser?> GetUserById(int userId)
         {
             return await _context.TUsers.FindAsync(userId);
         }
 
-        public async Task<TUser> GetUserByEmail(string email)
+        public async Task<TUser?> GetUserByEmail(string email)
         {
             return await _context.TUsers.Where(user => user.Email == email).FirstOrDefaultAsync();
         }
 
-        public async Task<TUser> AddTokens(int userId, int number)
+        public async Task<TUser?> AddTokens(int userId, int number)
         {
             var user = await _context.TUsers.FirstOrDefaultAsync(u => u.Id == userId);
             if (user == null)

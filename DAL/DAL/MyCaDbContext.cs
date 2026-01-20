@@ -8,7 +8,7 @@ namespace Entities.Models;
 
 public partial class MyCaDbContext : DbContext
 {
-    public IConfiguration _configuration;
+    public IConfiguration? _configuration;
 
     public MyCaDbContext()
     {

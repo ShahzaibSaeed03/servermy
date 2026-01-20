@@ -28,7 +28,7 @@ namespace BL
             return user.Id;
         }
 
-        public async Task<TUser> GetUserById(int userId)
+        public async Task<TUser?> GetUserById(int userId)
         {
             return await _userDAL.GetUserById(userId);
         }
