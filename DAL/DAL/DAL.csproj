@@ -7,10 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="BCrypt.Net" Version="0.1.0" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\DTO\DTO\DTO.csproj" />
     <ProjectReference Include="..\..\Entities\Entities\Entities.csproj" />
   </ItemGroup>
