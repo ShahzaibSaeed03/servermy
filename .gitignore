@@ -4,3 +4,6 @@ obj/
 *.user
 appsettings.Development.json
 MyCAServer/appsettings.json
+out/
+bin/
+obj/
