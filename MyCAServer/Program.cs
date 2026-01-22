@@ -11,7 +11,8 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 
 /* ===================== PORT (MANDATORY) ===================== */
-builder.WebHost.UseUrls("http://0.0.0.0:8080");
+var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
+builder.WebHost.UseUrls($"http://0.0.0.0:{port}");
 
 /* ===================== SERVICES ===================== */
 builder.Services.AddTransient<IUserBL, UserBL>();
